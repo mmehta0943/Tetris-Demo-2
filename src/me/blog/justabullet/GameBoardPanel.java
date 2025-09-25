@@ -28,7 +28,9 @@ public class GameBoardPanel extends JPanel implements ActionListener {
 	private boolean isFallingDone = false;
 	private boolean isStarted = false;
 	private boolean isPaused = false;
+	private boolean isGameOver = false;
 	private int currentScore = 0; // removed lines == score
+	private int pieceCount = 0; // number of pieces played
 
 	// position of current block
 	private int curX = 0;
@@ -44,6 +46,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
 	// adjusting game status
 	private String currentStatus;
 	private String currentLevel;
+	private String currentPieces;
 	private int currentTimerResolution;
 
 
@@ -159,7 +162,9 @@ public class GameBoardPanel extends JPanel implements ActionListener {
 
 		isStarted = true;
 		isFallingDone = false;
+		isGameOver = false;
 		currentScore = 0;
+		pieceCount = 0;
 		initBoard();
 
 		newTetromino();
@@ -199,18 +204,25 @@ public class GameBoardPanel extends JPanel implements ActionListener {
 
 		super.paint(g);
 
-		if(!isPaused) {
+		if(isGameOver) {
+			currentStatus = "GAME OVER";
+			currentLevel = "Score: " + currentScore;
+			currentPieces = "Pieces: " + pieceCount;
+		} else if(!isPaused) {
 			currentStatus = "Score: " + currentScore;
 			currentLevel = "Level: " + (currentScore / 10 + 1);
+			currentPieces = "Pieces: " + pieceCount;
 		} else {
 			currentStatus = "PAUSED";
 			currentLevel = "";
+			currentPieces = "";
 		}
 
 		g.setColor(Color.WHITE);
 		g.setFont(new Font("Consolas", Font.PLAIN, 28));
 		g.drawString(currentStatus, 15, 35);
 		g.drawString(currentLevel, 15, 70);
+		g.drawString(currentPieces, 15, 105);
 
 		Dimension size = getSize();
 		int boardTop = (int) size.getHeight() - BoardHeight * blockHeight();
@@ -326,11 +338,14 @@ public class GameBoardPanel extends JPanel implements ActionListener {
 		curBlock.setRandomShape();
 		curX = BoardWidth / 2 + 1;
 		curY = BoardHeight - 1 + curBlock.minY();
+		pieceCount++;
 
 		if (!isMovable(curBlock, curX, curY)) {
 			curBlock.setShape(Tetrominoes.NO_BLOCK);
 			timer.stop();
 			isStarted = false;
+			isGameOver = true;
+			repaint();
 		}
 	}
 
