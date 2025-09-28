@@ -340,7 +340,6 @@ public class GameBoardPanel extends JPanel implements ActionListener {
 		curY = BoardHeight - 1 + curBlock.minY();
 		pieceCount++;
 
-		// Test error: end game after 25 pieces
 		if (pieceCount >= 25) {
 			curBlock.setShape(Tetrominoes.NO_BLOCK);
 			timer.stop();
