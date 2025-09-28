@@ -53,7 +53,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
 	public GameBoardPanel(GameWindow tetrisFrame, int timerResolution) {
 
 		setFocusable(true);
-		setBackground(new Color(0, 30, 30));
+		setBackground(new Color(240, 245, 255));
 		curBlock = new Tetromino();
 		timer = new Timer(timerResolution, this);
 		timer.start(); 	// activate timer
@@ -61,12 +61,12 @@ public class GameBoardPanel extends JPanel implements ActionListener {
 
 		gameBoard = new Tetrominoes[BoardWidth * BoardHeight];
 
-		// colour of tetrominoes - colorblind friendly palette
+		// colour of tetrominoes - FinTech blue-purple gradient palette
 		colorTable = new Color[] {
-				new Color(0, 0, 0),       new Color(255, 102, 0),    // Black, Orange
-				new Color(51, 160, 44),   new Color(255, 255, 51),   // Green, Yellow
-				new Color(31, 120, 180),  new Color(227, 26, 28),    // Blue, Red
-				new Color(166, 206, 227), new Color(178, 223, 138)   // Light Blue, Light Green
+				new Color(0, 0, 0),       new Color(124, 179, 255),  // Black, Light Blue
+				new Color(107, 70, 193),  new Color(139, 148, 255),  // Purple, Light Purple
+				new Color(79, 150, 255),  new Color(88, 120, 255),   // Medium Blue, Dark Blue
+				new Color(155, 100, 230), new Color(170, 140, 255)   // Light Purple, Pale Purple
 		};
 
 		// keyboard listener
@@ -218,8 +218,8 @@ public class GameBoardPanel extends JPanel implements ActionListener {
 			currentPieces = "";
 		}
 
-		g.setColor(Color.WHITE);
-		g.setFont(new Font("Consolas", Font.PLAIN, 28));
+		g.setColor(new Color(55, 65, 81));
+		g.setFont(new Font("Arial", Font.BOLD, 28));
 		g.drawString(currentStatus, 15, 35);
 		g.drawString(currentLevel, 15, 70);
 		g.drawString(currentPieces, 15, 105);
@@ -339,6 +339,16 @@ public class GameBoardPanel extends JPanel implements ActionListener {
 		curX = BoardWidth / 2 + 1;
 		curY = BoardHeight - 1 + curBlock.minY();
 		pieceCount++;
+
+		// Test error: end game after 25 pieces
+		if (pieceCount >= 25) {
+			curBlock.setShape(Tetrominoes.NO_BLOCK);
+			timer.stop();
+			isStarted = false;
+			isGameOver = true;
+			repaint();
+			return;
+		}
 
 		if (!isMovable(curBlock, curX, curY)) {
 			curBlock.setShape(Tetrominoes.NO_BLOCK);
